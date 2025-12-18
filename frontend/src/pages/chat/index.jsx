@@ -44,8 +44,16 @@ const Chat = () => {
           <span>{fileDownloadingProgress}%</span>
         </div>
       )}
-      <ContactLayout />
-      {chatType === undefined ? <EmptyChatLayout /> : <ChatLayout />}
+      
+      {/* Contact sidebar - hidden on mobile when chat is active */}
+      <div className={`${chatType ? 'hidden md:block' : 'block'} w-full md:w-[35vw] lg:w-[30vw] xl:w-[20vw]`}>
+        <ContactLayout />
+      </div>
+      
+      {/* Chat area - shows on mobile when chat is selected, always visible on desktop */}
+      <div className={`${chatType ? 'block' : 'hidden md:block'} flex-1`}>
+        {chatType === undefined ? <EmptyChatLayout /> : <ChatLayout />}
+      </div>
     </main>
   );
 };

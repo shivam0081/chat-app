@@ -51,7 +51,7 @@ const ProfileInfo = () => {
   };
 
   return (
-    <div className="absolute bottom-0 h-16 flex items-center justify-between px-4 w-full bg-[#2a2b33]">
+    <div className="absolute bottom-0 h-16 flex items-center justify-between px-4 w-full bg-[#2a2b33] border-t border-white/10 shadow-lg">
       <div className="flex gap-3 items-center justify-center">
         <div className="w-10 h-10 rounded-full relative">
           <Avatar>
@@ -86,9 +86,9 @@ const ProfileInfo = () => {
       <div className="flex gap-1">
         <TooltipProvider>
           <Tooltip>
-            <TooltipTrigger className="p-2">
+            <TooltipTrigger className="p-2 hover:bg-purple-500/20 rounded-lg transition-all duration-200 hover:scale-110">
               <EditIcon
-                className="text-purple-500 text-medium w-5 h-5"
+                className="text-purple-500 text-medium w-5 h-5 hover:text-purple-400"
                 onClick={() => navigate("/profile")}
               />
             </TooltipTrigger>

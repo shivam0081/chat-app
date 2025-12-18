@@ -107,7 +107,7 @@ const NewDm = () => {
       >
         <ResponsiveModalContent
           side="bottom"
-          className="bg-[#181920] backdrop-blur-sm border-none text-white w-full md:max-w-[400px] min-h-[400px] flex flex-col"
+          className="bg-[#181920] backdrop-blur-sm border border-white/10 text-white w-full md:max-w-[400px] min-h-[400px] flex flex-col shadow-2xl"
         >
           <ResponsiveModalHeader>
             <ResponsiveModalTitle className={"text-center text-white"}>
@@ -118,7 +118,7 @@ const NewDm = () => {
           <div className="mb-4">
             <Input
               placeholder="Search contacts..."
-              className="rounded-lg p-4 text-xs bg-[#2c2e3b] border-none"
+              className="rounded-lg p-4 text-xs bg-[#2c2e3b] border border-white/10 shadow-md focus:border-[#8417ff]/50 transition-all duration-200"
               onChange={handleSearch}
               value={search}
             />

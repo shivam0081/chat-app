@@ -33,28 +33,28 @@ const ContactList = ({ contacts, isChannel = false }) => {
       {contacts?.map((contact) => (
         <div
           key={contact._id}
-          className={`pl-10 py-2 transition-all duration-300 cursor-pointer ${
+          className={`mx-2 my-1 px-2 sm:px-3 py-2 transition-all duration-200 cursor-pointer rounded-lg ${
             chatData && chatData._id === contact._id
-              ? "bg-[#8417ff] hover:bg-[#8417ff]"
-              : "hover:bg-[#f1f1f111]"
+              ? "bg-[#8417ff]/15 border-l-2 border-[#8417ff]"
+              : "hover:bg-white/5"
           }`}
           onClick={() => handleClick(contact)}
         >
-          <div className="flex items-center justify-start gap-4 text-neutral-300">
+          <div className="flex items-center gap-2 sm:gap-3 text-white">
             {!isChannel && (
               <>
-                <div className="w-10 h-10 rounded-full relative">
-                  <Avatar className="w-10 h-10 ">
+                <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full relative flex-shrink-0">
+                  <Avatar className="w-8 h-8 sm:w-9 sm:h-9">
                     {contact.image ? (
                       <AvatarImage
                         src={contact.image}
                         alt="profile"
-                        className="object-cover w-full rounded-fullh-full bg-black"
+                        className="object-cover w-full h-full rounded-full"
                         loading="lazy"
                       />
                     ) : (
                       <div
-                        className={`uppercase h-10 w-10 text-xs border flex-center rounded-full ${getColor(
+                        className={`uppercase h-8 w-8 sm:h-9 sm:w-9 text-xs flex-center rounded-full ${getColor(
                           contact.color
                         )}`}
                       >
@@ -64,34 +64,43 @@ const ContactList = ({ contacts, isChannel = false }) => {
                       </div>
                     )}
                   </Avatar>
+                  
+                  {/* Online indicator */}
+                  {onlineUser[contact._id] && (
+                    <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 sm:w-3 sm:h-3 bg-green-400 border-2 border-[#1a1a2e] rounded-full"></div>
+                  )}
                 </div>
               </>
             )}
             {isChannel && (
-              <div className="bg-[#ffffff22] relative flex  min-h-10 min-w-10 items-center justify-center rounded-full">
-                <span>#</span>
+              <div className="bg-[#8417ff]/20 flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-lg border border-[#8417ff]/30 flex-shrink-0">
+                <span className="text-xs sm:text-sm font-bold text-[#8417ff]">#</span>
               </div>
             )}
-            {isChannel ? (
-              <span className="truncate w-full text-sm md:max-w-[150px] lg:max-w-[180px] ">
-                {contact.name}
-              </span>
-            ) : (
-              <div className="flex flex-col">
-                <span className="font-medium text-sm">
-                  {contact.firstName
-                    ? `${contact.firstName} ${contact.lastName}`
-                    : contact.email}
-                </span>
-                <span className="text-xs">
-                  {onlineUser[contact._id] ? (
-                    <span className="tracking-wide">Online</span>
-                  ) : (
-                    <span className=" tracking-wide">Offline</span>
-                  )}
-                </span>
-              </div>
-            )}
+            
+            <div className="flex-1 min-w-0">
+              {isChannel ? (
+                <div className="flex flex-col">
+                  <span className="truncate text-sm font-medium text-white">
+                    {contact.name}
+                  </span>
+                  <span className="text-xs text-white/60">Channel</span>
+                </div>
+              ) : (
+                <div className="flex flex-col">
+                  <span className="font-medium text-sm text-white truncate">
+                    {contact.firstName
+                      ? `${contact.firstName} ${contact.lastName}`
+                      : contact.email}
+                  </span>
+                  <span className={`text-xs ${
+                    onlineUser[contact._id] ? "text-green-400" : "text-gray-400"
+                  }`}>
+                    {onlineUser[contact._id] ? "Online" : "Offline"}
+                  </span>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       ))}

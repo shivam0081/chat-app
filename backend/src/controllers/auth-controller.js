@@ -8,11 +8,8 @@ import {
   updateProvileValidate,
 } from "../validations/auth-validation.js";
 import { compare } from "bcrypt";
-import fs from "fs";
-import { PutObjectCommand } from "@aws-sdk/client-s3";
-import s3 from "../util/aws.js";
+import { uploadToCloudinary, deleteFromCloudinary } from "../util/multer.js";
 import dotenv from "dotenv";
-import resizeImage from "../util/resize-image.js";
 
 dotenv.config();
 
@@ -173,28 +170,13 @@ export const addProfileImage = async (req, res, next) => {
     return res.status(400).json({ error: "File is required." });
   }
 
-  const file = req.file;
-  const filePath = file.path;
-
   try {
-    const resizedFilePath = await resizeImage(filePath);
-
-    const fileStream = fs.createReadStream(resizedFilePath);
-
-    const uploadParams = {
-      Bucket: process.env.AWS_S3_BUCKET,
-      Key: `profiles/${Date.now().toString()}-${file.originalname}`,
-      Body: fileStream,
-      ACL: "public-read",
-    };
-
-    const data = await s3.send(new PutObjectCommand(uploadParams));
-
-    const fileName = `https://${process.env.AWS_S3_BUCKET}.s3.${process.env.AWS_REGION}.amazonaws.com/${uploadParams.Key}`;
+    // Upload to Cloudinary
+    const uploadResult = await uploadToCloudinary(req.file, 'chat/profiles');
 
     const userUpdate = await User.findByIdAndUpdate(
       { _id: req.userId },
-      { image: fileName },
+      { image: uploadResult.url },
       { new: true, runValidators: true }
     );
 

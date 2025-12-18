@@ -87,29 +87,38 @@ const ContactLayout = () => {
   }, [userData, selectedChannels, selectedDirectMessageContacts, trigger]);
 
   return (
-    <div className="relative w-full md:w-[35vw] lg:w-[30vw] xl:w-[20vw] bg-template border-r-2 border-[#2f303b] ">
-      <div className="">
-        <Logo />
+    <div className="relative w-full h-screen md:w-[35vw] lg:w-[30vw] xl:w-[20vw] bg-[#1a1a2e] md:border-r md:border-white/5">
+      {/* Simplified background effect */}
+      <div className="absolute inset-0 bg-gradient-to-b from-white/2 to-transparent pointer-events-none"></div>
+      
+      {/* Content */}
+      <div className="relative z-10 h-full">
+        <div className="border-b border-white/5">
+          <Logo />
+        </div>
+        
+        <div className="my-4 px-2">
+          <div className="flex-between pr-6 mb-3">
+            <Title text="Direct Messages" />
+            <NewDm />
+          </div>
+          <div className="max-h-[30vh] xs:max-h-[38vh] overflow-y-auto scroll-h">
+            <ContactList contacts={directMessageContaacts} />
+          </div>
+        </div>
+        
+        <div className="my-4 px-2">
+          <div className="flex-between pr-6 mb-3">
+            <Title text="Channels" />
+            <Channel />
+          </div>
+          <div className="max-h-[25vh] xs:max-h-[38vh] overflow-y-auto scrollbar-hidden">
+            <ContactList contacts={channel} isChannel={true} />
+          </div>
+        </div>
+        
+        <ProfileInfo />
       </div>
-      <div className="my-5">
-        <div className="flex-between pr-10">
-          <Title text="Direct Messages" />
-          <NewDm />
-        </div>
-        <div className="max-h-[30vh] xs:max-h-[38vh] overflow-y-auto scroll-h">
-          <ContactList contacts={directMessageContaacts} />
-        </div>
-      </div>
-      <div className="my-5">
-        <div className="flex-between pr-10">
-          <Title text="Channel" />
-          <Channel />
-        </div>
-        <div className="max-h-[25vh] xs:max-h-[38vh] overflow-y-auto scrollbar-hidden">
-          <ContactList contacts={channel} isChannel={true} />
-        </div>
-      </div>
-      <ProfileInfo />
     </div>
   );
 };

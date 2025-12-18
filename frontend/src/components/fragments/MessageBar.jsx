@@ -11,16 +11,18 @@ import {
 import { HOST } from "@/utils/constant";
 import axios from "axios";
 import EmojiPicker from "emoji-picker-react";
-import { Paperclip, SendHorizonal, Sticker } from "lucide-react";
+import { Paperclip, SendHorizonal, Sticker, Image, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { toast } from "sonner";
+import ImageUpload from "./ImageUpload";
 
 const MessageBar = () => {
   const emojiRef = useRef(null);
   const fileInputRef = useRef(null);
   const [message, setMessage] = useState("");
+  const [showImageUpload, setShowImageUpload] = useState(false);
   const chatData = useSelector(selectedChatData);
   const chatType = useSelector(selectedChatType);
   const userData = useSelector(selectedUserData);
@@ -105,6 +107,9 @@ const MessageBar = () => {
               messageType: "file",
               content: undefined,
               fileUrl: res.data.filePath,
+              fileName: res.data.data?.fileName,
+              fileSize: res.data.data?.fileSize,
+              contentType: res.data.data?.contentType,
             });
           } else if (chatType === "channel") {
             socket.emit("sendMessage-channel", {
@@ -112,6 +117,9 @@ const MessageBar = () => {
               content: undefined,
               messageType: "file",
               fileUrl: res.data.filePath,
+              fileName: res.data.data?.fileName,
+              fileSize: res.data.data?.fileSize,
+              contentType: res.data.data?.contentType,
               channelId: chatData._id,
             });
           }
@@ -122,6 +130,40 @@ const MessageBar = () => {
         dispatch(setIsUploading(false));
         fileInputRef.current.value = "";
       }
+    }
+  };
+
+  const handleImageUpload = async (imageData) => {
+    try {
+      // Send image message using socket
+      if (chatType === "contact") {
+        socket.emit("sendMessage", {
+          sender: userData._id,
+          recipient: chatData._id,
+          messageType: "image",
+          content: undefined,
+          fileUrl: imageData.url,
+          fileName: imageData.fileName,
+          fileSize: imageData.fileSize,
+          contentType: imageData.contentType,
+        });
+      } else if (chatType === "channel") {
+        socket.emit("sendMessage-channel", {
+          sender: userData._id,
+          content: undefined,
+          messageType: "image",
+          fileUrl: imageData.url,
+          fileName: imageData.fileName,
+          fileSize: imageData.fileSize,
+          contentType: imageData.contentType,
+          channelId: chatData._id,
+        });
+      }
+      
+      setShowImageUpload(false);
+      toast.success("Image sent successfully!");
+    } catch (error) {
+      toast.error("Failed to send image.");
     }
   };
 
@@ -138,21 +180,30 @@ const MessageBar = () => {
   }, [isEmojiPicker]);
 
   return (
-    <div className="h-[5vh] sm:h-[8vh] z-30 bg-[#1c1d25] flex-center  px-8 mb-2 gap-6">
-      <div className="flex-1 flex bg-[#2a2b33] rounded-md items-center  md:gap-6 pr-5">
+    <div className="h-[6vh] sm:h-[7vh] z-30 bg-[#1c1d25] flex-center px-3 sm:px-6 md:px-8 mb-2 gap-3 sm:gap-4 border-t border-white/5">
+      <div className="flex-1 flex bg-[#2a2b33] rounded-lg items-center gap-2 sm:gap-3 pr-3 sm:pr-4 shadow-sm">
         <input
           type="text"
-          className="w-full p-2.5 sm:p-3 text-sm bg-transparent rounded-md focus:border-none focus:outline-none"
-          placeholder="Enter Message"
+          className="w-full p-2 sm:p-2.5 text-sm bg-transparent rounded-md focus:border-none focus:outline-none text-white caret-[#8417ff] placeholder:text-white/40"
+          placeholder="Type a message..."
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           onKeyDown={handleKeyDown}
         />
         <button
           onClick={handleAttachmentClick}
-          className="text-neutral-500 rounded-sm p-1 focus:border-none focus:outline-none focus:text-white duration-300 transition-all"
+          className="text-neutral-400 hover:text-white rounded p-1.5 sm:p-2 focus:border-none focus:outline-none hover:bg-white/10 duration-200 transition-all"
+          title="Attach File"
         >
-          <Paperclip className="w-5 h-5 sm:w-[23px] sm:h-[23px]" />
+          <Paperclip className="w-4 h-4 sm:w-5 sm:h-5" />
+        </button>
+        
+        <button
+          onClick={() => setShowImageUpload(true)}
+          className="text-neutral-400 hover:text-white rounded p-1.5 sm:p-2 focus:border-none focus:outline-none hover:bg-white/10 duration-200 transition-all"
+          title="Upload Image"
+        >
+          <Image className="w-4 h-4 sm:w-5 sm:h-5" />
         </button>
         <input
           type="file"
@@ -165,13 +216,13 @@ const MessageBar = () => {
           <button
             onClick={() => setIsEmojiPicker(true)}
             aria-label="emoji picker"
-            className="text-neutral-500 rounded-sm p-1 focus:border-none focus:outline-none focus:text-white duration-300 transition-all"
+            className="text-neutral-400 hover:text-white rounded p-1.5 sm:p-2 focus:border-none focus:outline-none hover:bg-white/10 duration-200 transition-all"
           >
-            <Sticker className="w-6 h-6 sm:w-[25px] sm:h-[25px]" />
+            <Sticker className="w-4 h-4 sm:w-5 sm:h-5" />
           </button>
 
           <div
-            className="absolute bottom-16 -right-24 sm:right-0"
+            className="absolute bottom-12 -right-20 sm:right-0"
             ref={emojiRef}
           >
             <EmojiPicker
@@ -187,10 +238,46 @@ const MessageBar = () => {
       <button
         onClick={handleSendMessage}
         aria-label="send message"
-        className="bg-[#8417ff] rounded-md flex-center p-2 sm:p-3 hover:bg-[#741bda] focus:bg-[#741bda] focus:border-none focus:outline-none focus:text-white duration-300 transition-all"
+        className="bg-[#8417ff] rounded-lg flex-center p-2 sm:p-2.5 hover:bg-[#741bda] focus:bg-[#741bda] focus:border-none focus:outline-none focus:text-white duration-200 transition-all shadow-md min-w-[40px] sm:min-w-[44px]"
       >
-        <SendHorizonal width={20} height={20} />
+        <SendHorizonal className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
       </button>
+      
+      {/* Enhanced Image Upload Modal */}
+      {showImageUpload && (
+        <div 
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 animate-in fade-in duration-200"
+          onClick={() => setShowImageUpload(false)}
+        >
+          <div 
+            className="bg-[#1e1f25] border border-gray-700 rounded-2xl p-6 max-w-lg w-full mx-4 shadow-2xl transform animate-in zoom-in duration-200"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex justify-between items-center mb-6">
+              <div className="flex items-center space-x-3">
+                <div className="p-2 bg-[#8417ff]/10 rounded-lg">
+                  <Image className="w-5 h-5 text-[#8417ff]" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-white">Share an Image</h3>
+                  <p className="text-sm text-gray-400">Upload and send an image to the chat</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowImageUpload(false)}
+                className="p-2 text-gray-400 hover:text-white hover:bg-gray-700 rounded-lg transition-all duration-200"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <ImageUpload 
+              onImageUpload={handleImageUpload}
+              disabled={false}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

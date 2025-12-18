@@ -1,11 +1,20 @@
 import express from "express";
 import { verifyToken } from "../middlewares/auth-middleware.js";
-import { getMessage, uploadFile } from "../controllers/message-controller.js";
+import { 
+  getMessage, 
+  uploadFile, 
+  sendMessage, 
+  sendImageMessage, 
+  sendFileMessage 
+} from "../controllers/message-controller.js";
 import { upload } from "../util/multer.js";
 
 const messageRoutes = express.Router();
 
 messageRoutes.post("/get-messages", verifyToken, getMessage);
+messageRoutes.post("/send-message", verifyToken, sendMessage);
+messageRoutes.post("/send-image", verifyToken, sendImageMessage);
+messageRoutes.post("/send-file", verifyToken, sendFileMessage);
 messageRoutes.post(
   "/upload-file",
   verifyToken,

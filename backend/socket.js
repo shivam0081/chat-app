@@ -54,7 +54,7 @@ const setupSocket = (server) => {
   };
 
   const sendMessageChannel = async (message) => {
-    const { channelId, sender, content, messageType, fileUrl } = message;
+    const { channelId, sender, content, messageType, fileUrl, fileName, fileSize, contentType } = message;
 
     try {
       // Membuat pesan baru
@@ -65,6 +65,9 @@ const setupSocket = (server) => {
         messageType,
         timeStamp: new Date(),
         fileUrl,
+        fileName,
+        fileSize,
+        contentType,
       });
 
       // Populasi data pesan yang baru dibuat
