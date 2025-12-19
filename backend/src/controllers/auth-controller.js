@@ -46,8 +46,8 @@ export const signup = async (req, res, next) => {
     const user = await newUser.save();
     res.cookie("jwt", createToken(email, user._id), {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      secure: true,
+      sameSite: "none",
       maxAge: maxAge
     });
 

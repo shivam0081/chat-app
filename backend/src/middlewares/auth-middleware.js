@@ -16,8 +16,8 @@ export const verifyToken = (req, res, next) => {
       if (err) {
         res.clearCookie("jwt", {
           httpOnly: true,
-          secure: process.env.NODE_ENV === "production",
-          sameSite: "strict"
+          secure: true,
+          sameSite: "none"
         });
         throw new ResponseError(401, "Token is invalid or expired");
       }
