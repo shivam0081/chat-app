@@ -55,7 +55,7 @@ export const getContactsForDMlist = async (req, res, next) => {
         },
       },
       {
-        $sort: { timestamp: -1 },
+        $sort: { timeStamp: -1 },
       },
       {
         $group: {

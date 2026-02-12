@@ -26,8 +26,8 @@ const SocketProvider = ({ children }) => {
   const socket = useRef();
   const userData = useSelector(selectedUserData);
   const chatData = useSelector(selectedChatData);
-  const chatMessage = useSelector(selectedChatType);
-  const chatType = useSelector(selectedChatMessage);
+  const chatType = useSelector(selectedChatType);
+  const chatMessages = useSelector(selectedChatMessage);
   const dispatch = useDispatch();
   const cookie = Cookie.get("jwt");
   const trigger = useSelector(selectedTrigger);
@@ -105,7 +105,7 @@ const SocketProvider = ({ children }) => {
         );
       };
     }
-  }, [chatData, chatType, chatMessage]);
+  }, [chatData, chatType, chatMessages]);
 
   return (
     <SocketContext.Provider value={socket.current}>

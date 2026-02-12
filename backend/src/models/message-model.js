@@ -30,21 +30,15 @@ const messageSchema = new mongoose.Schema({
   },
   fileName: {
     type: String,
-    required: function () {
-      return this.messageType === "file" || this.messageType === "image";
-    },
+    required: false,
   },
   fileSize: {
     type: Number,
-    required: function () {
-      return this.messageType === "file" || this.messageType === "image";
-    },
+    required: false,
   },
   contentType: {
     type: String,
-    required: function () {
-      return this.messageType === "file" || this.messageType === "image";
-    },
+    required: false,
   },
   isRead: {
     type: Boolean,

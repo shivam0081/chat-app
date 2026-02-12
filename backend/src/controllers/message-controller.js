@@ -16,7 +16,7 @@ export const getMessage = async (req, res, next) => {
         { sender: user1, recipient: user2 },
         { sender: user2, recipient: user1 },
       ],
-    }).sort({ timestamp: 1 });
+    }).sort({ timeStamp: 1 });
 
     res.status(200).json({ success: true, messages });
   } catch (error) {
